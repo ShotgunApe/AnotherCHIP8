@@ -28,7 +28,6 @@ $(TEST_TARGET): $(TEST_OBJS) $(filter-out build/main.o, $(OBJS))  # exclude main
 
 .PHONY: test
 test: $(TEST_TARGET)
-	clear
 	./$(TEST_TARGET)
 
 .PHONY: clean
