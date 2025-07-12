@@ -25,7 +25,7 @@ void display_debug(SDL_Renderer **gRenderer, char debug_msgs[DEBUG_MSGS_HEIGHT][
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(*gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(*gRenderer);  /* start with a blank canvas. */
-    SDL_SetRenderDrawColor(*gRenderer, 255, 255, 255, 0x9F); /* text is slightly transparent */
+    SDL_SetRenderDrawColor(*gRenderer, 255, 255, 255, 0x7F); /* text is slightly transparent */
 
     for (int i = 0; i < DEBUG_MSGS_HEIGHT; i++) {
         SDL_RenderDebugText(*gRenderer, 0, ((float) i * charsize) + 2, debug_msgs[i]);

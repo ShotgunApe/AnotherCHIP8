@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = `pkg-config --cflags sdl3`
 LDFLAGS = `pkg-config --libs sdl3`
 
-SRCS := src/main.c src/components/window.c
+SRCS := src/main.c src/components/window.c src/components/chip8.c
 OBJS = $(SRCS:src/%.c=build/%.o)
 TARGET = build/AnotherCHIP8
 
