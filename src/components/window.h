@@ -5,7 +5,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-SDL_Window* init_sdl_window();
-void display_text(SDL_Renderer *gRenderer);
+void init_sdl_window(SDL_Window **gWindow, SDL_Renderer **gRenderer);
+void display_text(SDL_Renderer **gRenderer);
 
 #endif
