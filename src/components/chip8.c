@@ -20,8 +20,29 @@ void process(struct Chip8 *state, uint16_t opcode) {
         case 0x1000:
             state->pc = (opcode & 0x0FFF);
             break;
+        
+        case 0x2000:
+            break;
+        
+        case 0x3000:
+            break;
+        
+        case 0x4000:
+            break;
+        
+        case 0x5000:
+            break;
 
         case 0x6000:
+            break;
+
+        case 0x7000:
+            break;
+
+        case 0x8000:
+            break;
+
+        case 0x9000:
             break;
     }
 }

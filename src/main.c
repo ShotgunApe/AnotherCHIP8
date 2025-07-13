@@ -14,6 +14,12 @@ int main(int argc, char **argv) {
     SDL_Event event;
     bool render_debug_msgs = true;
 
+    struct Chip8 emu;
+    struct Chip8 *state;
+    state = &emu;
+
+    state->pc = 0x200;
+
     int debug_msg_size;
     char debug_msgs[DEBUG_MSGS_HEIGHT][DEBUG_MSGS_LENGTH];
 
@@ -37,9 +43,9 @@ int main(int argc, char **argv) {
 
         SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(gRenderer);
-        
+
         if (render_debug_msgs) {
-            display_debug(&gRenderer, debug_msgs);
+            display_debug(state, &gRenderer, debug_msgs);
         }
         
         SDL_RenderPresent(gRenderer);

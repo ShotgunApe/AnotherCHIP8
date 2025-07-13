@@ -26,13 +26,13 @@ void create_sdl_window(SDL_Window **gWindow, SDL_Renderer **gRenderer) {
     *gRenderer = SDL_CreateRenderer(*gWindow, NULL);
 }
 
-void display_debug(SDL_Renderer **gRenderer, char debug_msgs[DEBUG_MSGS_HEIGHT][DEBUG_MSGS_LENGTH]) {
+void display_debug(struct Chip8 *state, SDL_Renderer **gRenderer, char debug_msgs[DEBUG_MSGS_HEIGHT][DEBUG_MSGS_LENGTH]) {
 
     const int charsize = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
     
     for (int i = 0; i < DEBUG_MSGS_HEIGHT; i++) {
         char tmp[DEBUG_MSGS_LENGTH];
-        construct_message(tmp, i);
+        construct_message(state, tmp, i);
         strncpy(debug_msgs[i], tmp, DEBUG_MSGS_LENGTH);
     }
 
@@ -43,7 +43,7 @@ void display_debug(SDL_Renderer **gRenderer, char debug_msgs[DEBUG_MSGS_HEIGHT][
     }
 }
 
-void construct_message(char *line, int i) {
+void construct_message(struct Chip8 *state, char *line, int i) {
 
     const char *left = emu_types[i * 2];
     const char *right = emu_types[i * 2 + 1];
@@ -54,13 +54,13 @@ void construct_message(char *line, int i) {
         if (blank_right) {
             snprintf(line, DEBUG_MSGS_LENGTH, "%s 0x0000", left);
         } else {
-            snprintf(line, DEBUG_MSGS_LENGTH, "%s 0x0000  %s 0x0000", left, right);
+            snprintf(line, DEBUG_MSGS_LENGTH, "%s %#06x  %s 0x0000", left, state->pc, right);
         }
     }
     else if (strcmp(left, "  ") == 0) {
         snprintf(line, DEBUG_MSGS_LENGTH, "                   ");
     }
     else {
-        snprintf(line, DEBUG_MSGS_LENGTH, "%s  0x00   %s  0x00", left, right);
+        snprintf(line, DEBUG_MSGS_LENGTH, "%s  %#04x   %s  %#04x", left, state->registers[i * 2], right, state->registers[i * 2 + 1]);
     }
 }
