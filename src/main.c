@@ -26,14 +26,18 @@ int main(int argc, char **argv) {
 
         while (SDL_PollEvent(&event) != 0 ) {
 		    switch (event.type) {
+                case SDL_EVENT_KEY_DOWN:
+                    render_debug_msgs = !render_debug_msgs;
+                    break;
 			    case SDL_EVENT_QUIT:
 			    	running = false;
 			    	break;
 		    }
 	    }
 
+        SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(gRenderer);
-
+        
         if (render_debug_msgs) {
             display_debug(&gRenderer, debug_msgs);
         }

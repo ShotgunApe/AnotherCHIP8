@@ -36,8 +36,6 @@ void display_debug(SDL_Renderer **gRenderer, char debug_msgs[DEBUG_MSGS_HEIGHT][
         strncpy(debug_msgs[i], tmp, DEBUG_MSGS_LENGTH);
     }
 
-    SDL_SetRenderDrawColor(*gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(*gRenderer);
     SDL_SetRenderDrawColor(*gRenderer, 255, 255, 255, 0x7F); /* text is slightly transparent */
 
     for (int i = 0; i < DEBUG_MSGS_HEIGHT; i++) {
