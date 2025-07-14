@@ -9,6 +9,11 @@
 
 int main(int argc, char **argv) {
 
+    if (argc < 2) {
+        printf("Usage: %s <filename>\n", argv[0]);
+        return 1;
+    }
+
     SDL_Window *gWindow = NULL;
     SDL_Renderer *gRenderer = NULL;
     SDL_Event event;
@@ -17,8 +22,13 @@ int main(int argc, char **argv) {
     struct Chip8 emu;
     struct Chip8 *state;
     state = &emu;
+    uint16_t opcode;
 
-    initialize_emu(state);
+    unsigned int delta_a = SDL_GetTicks();
+    unsigned int delta_b = SDL_GetTicks();
+    double delta_time = 0;
+
+    initialize_emu(state, argv);
 
     int debug_msg_size;
     char debug_msgs[DEBUG_MSGS_HEIGHT][DEBUG_MSGS_LENGTH];
@@ -30,25 +40,34 @@ int main(int argc, char **argv) {
 
     while (running) {
 
-        while (SDL_PollEvent(&event) != 0 ) {
-		    switch (event.type) {
-                case SDL_EVENT_KEY_DOWN:
-                    render_debug_msgs = !render_debug_msgs;
-                    break;
-			    case SDL_EVENT_QUIT:
-			    	running = false;
-			    	break;
-		    }
-	    }
+        delta_a = SDL_GetTicks();
+        delta_time = delta_a - delta_b;
 
-        SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(gRenderer);
+        if (delta_time > 1000/60.0) {
+            opcode = decode(state);
+            process(state, opcode);
 
-        if (render_debug_msgs) {
-            display_debug(state, &gRenderer, debug_msgs);
+            while (SDL_PollEvent(&event) != 0 ) {
+		        switch (event.type) {
+                    case SDL_EVENT_KEY_DOWN:
+                        render_debug_msgs = !render_debug_msgs;
+                        break;
+		    	    case SDL_EVENT_QUIT:
+		    	    	running = false;
+		    	    	break;
+		        }
+	        }
+
+            SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+            SDL_RenderClear(gRenderer);
+
+            if (render_debug_msgs) {
+                display_debug(state, &gRenderer, debug_msgs);
+            }
+
+            SDL_RenderPresent(gRenderer);
+            delta_b = delta_a;
         }
-        
-        SDL_RenderPresent(gRenderer);
     }
 
     return 0;

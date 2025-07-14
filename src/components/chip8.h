@@ -2,7 +2,9 @@
 #define CHIP8_H
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define SCREEN_WIDTH 64
 #define SCREEN_HEIGHT 32
@@ -13,11 +15,12 @@ struct Chip8 {
     uint16_t pc;
     uint16_t i;
     uint8_t registers[VX_REGISTERS];
+    unsigned char memory[4096];
     bool display[SCREEN_WIDTH][SCREEN_HEIGHT];
 };
 
-void initialize_emu(struct Chip8 *state);
-void decode();
+void initialize_emu(struct Chip8 *state, char *argv[]);
+uint16_t decode(struct Chip8 *state);
 void process(struct Chip8 *state, uint16_t opcode);
 
 #endif

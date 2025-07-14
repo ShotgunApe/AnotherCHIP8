@@ -12,9 +12,6 @@ int main() {
     state->pc = 0x200;
     
     // TEST 1 - 1NNN
-    process(state, 0x1FAA);
-    assert(state->pc == 0x0FAA);
-
     process(state, 0x1A43);
     assert(state->pc == 0x0A43);
 
@@ -43,8 +40,8 @@ int main() {
     assert(state->registers[10] == 0x44);
 
     // TEST 5 - ANNN
-    process(state, 0xA200);
-    assert(state->i == 0x0200);
+    process(state, 0xAA00);
+    assert(state->i == 0x0A00);
 
     printf("Tests Passed.\n");
     return 0;

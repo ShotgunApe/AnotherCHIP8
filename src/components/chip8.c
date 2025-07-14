@@ -1,6 +1,6 @@
 #include "chip8.h"
 
-void initialize_emu(struct Chip8 *state) {
+void initialize_emu(struct Chip8 *state, char *argv[]) {
 
     state->pc = 0x0200;
     state->i  = 0x0000;
@@ -14,10 +14,19 @@ void initialize_emu(struct Chip8 *state) {
             state->display[i][j] = false;
         }
     }
+
+    FILE *file;
+    file = fopen(argv[1], "rb");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(1);
+    }
+
+    fread(state->memory, 1, sizeof(state->memory), file);
 }
 
-void decode() {
-
+uint16_t decode(struct Chip8 *state) {
+    return 0x200;
 }
 
 void process(struct Chip8 *state, uint16_t opcode) {
@@ -70,5 +79,14 @@ void process(struct Chip8 *state, uint16_t opcode) {
         case 0xA000:
             state->i = (opcode & 0x0FFF);
             break;
+        
+        case 0xD000: {
+            int x = state->registers[(opcode & 0x0F00)] >> 8 % 64;
+            int y = state->registers[(opcode & 0x00F0)] >> 4 % 32;
+            state->registers[15] = 0x00;
+
+
+            break;
+        }
     }
 }
