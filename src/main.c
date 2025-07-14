@@ -1,11 +1,15 @@
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "components/window.h"
 
 #define DEBUG_MSGS_HEIGHT 12
 #define DEBUG_MSGS_LENGTH 20
+#define SCALE 8
+#define FRAMERATE 60.0
 
 int main(int argc, char **argv) {
 
@@ -35,6 +39,10 @@ int main(int argc, char **argv) {
 
     SDL_Init(SDL_INIT_VIDEO);
     create_sdl_window(&gWindow, &gRenderer);
+    
+    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(gRenderer);
+    SDL_RenderPresent(gRenderer);
 
     bool running = true;
 
@@ -43,7 +51,7 @@ int main(int argc, char **argv) {
         delta_a = SDL_GetTicks();
         delta_time = delta_a - delta_b;
 
-        if (delta_time > 1000/60.0) {
+        if (delta_time > 1000 / FRAMERATE) {
             opcode = decode(state);
             process(state, opcode);
 
@@ -60,6 +68,21 @@ int main(int argc, char **argv) {
 
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
             SDL_RenderClear(gRenderer);
+
+            for (int i = 0; i < 64; i++) {
+                for (int j = 0; j < 32; j++) {
+                    if (state->display[i][j]) {
+                        SDL_SetRenderDrawColor(gRenderer, 0, 0, 255, SDL_ALPHA_OPAQUE);
+                        SDL_FRect pixel = {
+                            i * SCALE,
+                            j * SCALE,
+                            SCALE,
+                            SCALE
+                        };
+                        SDL_RenderFillRect(gRenderer, &pixel);
+                    }
+                }
+            }
 
             if (render_debug_msgs) {
                 display_debug(state, &gRenderer, debug_msgs);

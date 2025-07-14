@@ -22,11 +22,12 @@ void initialize_emu(struct Chip8 *state, char *argv[]) {
         exit(1);
     }
 
-    fread(state->memory, 1, sizeof(state->memory), file);
+    fread(&state->memory[0x200], 1, sizeof(state->memory) - 0x200, file);
 }
 
 uint16_t decode(struct Chip8 *state) {
-    return 0x200;
+    uint16_t opcode = (state->memory[state->pc] << 8) | state->memory[state->pc + 1];
+    return opcode;
 }
 
 void process(struct Chip8 *state, uint16_t opcode) {
@@ -81,10 +82,29 @@ void process(struct Chip8 *state, uint16_t opcode) {
             break;
         
         case 0xD000: {
-            int x = state->registers[(opcode & 0x0F00)] >> 8 % 64;
-            int y = state->registers[(opcode & 0x00F0)] >> 4 % 32;
+            int x = (state->registers[(opcode & 0x0F00) >> 8]) % 64;
+            int y = (state->registers[(opcode & 0x00F0) >> 4]) % 32;
             state->registers[15] = 0x00;
 
+            for (int i = 0; i < (opcode & 0x000F); i++) {
+                uint8_t byte = state->memory[state->i + i];
+
+                for (int j = 0; j < 8; j++) {
+                    uint8_t pixel = (byte >> (7 - j)) & 1;
+
+                    int sprite_x = (x + j) % 64;
+                    int sprite_y = (y + i) % 32;
+
+                    bool current = state->display[sprite_x][sprite_y];
+                    bool new = current ^ pixel;
+
+                    state->display[sprite_x][sprite_y] = new;
+
+                    if (current && pixel) {
+                        state->registers[15] = 1;
+                    }
+                }
+            }
 
             break;
         }
