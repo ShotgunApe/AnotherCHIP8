@@ -54,13 +54,13 @@ void construct_message(struct Chip8 *state, char *line, int i) {
         if (blank_right) {
             snprintf(line, DEBUG_MSGS_LENGTH, "%s 0x0000", left);
         } else {
-            snprintf(line, DEBUG_MSGS_LENGTH, "%s %#06x  %s 0x0000", left, state->pc, right);
+            snprintf(line, DEBUG_MSGS_LENGTH, "%s %#06x  %s %#06x", left, state->pc, right, state->i);
         }
     }
     else if (strcmp(left, "  ") == 0) {
         snprintf(line, DEBUG_MSGS_LENGTH, "                   ");
     }
     else {
-        snprintf(line, DEBUG_MSGS_LENGTH, "%s  %#04x   %s  %#04x", left, state->registers[i * 2], right, state->registers[i * 2 + 1]);
+        snprintf(line, DEBUG_MSGS_LENGTH, "%s  0x%02x  %s  0x%02x", left, state->registers[i * 2], right, state->registers[i * 2 + 1]);
     }
 }

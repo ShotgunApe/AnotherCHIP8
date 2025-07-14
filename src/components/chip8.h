@@ -9,13 +9,17 @@
 #define SCREEN_WIDTH 64
 #define SCREEN_HEIGHT 32
 #define VX_REGISTERS 16
+#define STACK_DEPTH 16
+#define WRITABLE_MEM 4096
 
 // http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 struct Chip8 {
     uint16_t pc;
     uint16_t i;
-    uint8_t registers[VX_REGISTERS];
-    unsigned char memory[4096];
+    uint8_t  sp;
+    uint8_t  registers[VX_REGISTERS];
+    uint16_t stack[STACK_DEPTH];
+    unsigned char memory[WRITABLE_MEM];
     bool display[SCREEN_WIDTH][SCREEN_HEIGHT];
 };
 

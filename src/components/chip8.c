@@ -4,9 +4,14 @@ void initialize_emu(struct Chip8 *state, char *argv[]) {
 
     state->pc = 0x0200;
     state->i  = 0x0000;
+    state->sp = 0x00;
     
     for (int i = 0; i < VX_REGISTERS; i++) {
         state->registers[i] = 0x00;
+    }
+
+    for (int i = 0; i < STACK_DEPTH; i++) {
+        state->stack[i] = 0x00;
     }
 
     for (int i = 0; i < SCREEN_WIDTH; i++) {
@@ -36,9 +41,9 @@ void process(struct Chip8 *state, uint16_t opcode) {
 
     switch (opcode & 0xF000) {
         case 0x0000:
-            for (int i = 0; i < SCREEN_WIDTH; i++) {
-                for (int j = 0; j < SCREEN_HEIGHT; j++) {
-                    state->display[i][j] = false;
+            for (int x = 0; x < SCREEN_WIDTH; x++) {
+                for (int y = 0; y < SCREEN_HEIGHT; y++) {
+                    state->display[x][y] = false;
                 }
             }
             break;
@@ -48,13 +53,26 @@ void process(struct Chip8 *state, uint16_t opcode) {
             break;
         
         case 0x2000:
+            state->stack[state->sp] = state->pc;
+            (state->sp) += 1;
+            state->pc = (opcode & 0x0FFF);
             break;
         
-        case 0x3000:
+        case 0x3000: {
+            int reg = (opcode & 0x0F00) >> 8;
+            if (state->registers[reg] == (opcode & 0x00FF)) {
+                state->pc += 2;
+            }
             break;
+        }
         
-        case 0x4000:
+        case 0x4000: {
+            int reg = (opcode & 0x0F00) >> 8;
+            if (state->registers[reg] != (opcode & 0x00FF)) {
+                state->pc += 2;
+            }
             break;
+        }
         
         case 0x5000:
             break;
@@ -105,7 +123,6 @@ void process(struct Chip8 *state, uint16_t opcode) {
                     }
                 }
             }
-
             break;
         }
     }

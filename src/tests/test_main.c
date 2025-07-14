@@ -43,6 +43,27 @@ int main() {
     process(state, 0xAA00);
     assert(state->i == 0x0A00);
 
+    // TEST 6 - 2NNN
+    state->pc = 0x0200;
+    process(state, 0x2120);
+    assert(state->sp == 0x01);
+    assert(state->stack[0] == 0x0202);
+    assert(state->pc == 0x0120);
+
+    // TEST 7 - 3XKK
+    state->pc = 0x0200;
+    state->registers[1] = 0xFF;
+    process(state, 0x31FF);
+    assert(state->pc == 0x0204);
+
+    // TEST 8 - 4XKK
+    state->pc = 0x0200;
+    state->registers[1] = 0xFF;
+    process(state, 0x41FF);
+    assert(state->pc == 0x0202);
+
+    // TEST 9 - 5XY0
+
     printf("Tests Passed.\n");
     return 0;
 }
