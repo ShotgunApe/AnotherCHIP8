@@ -1,5 +1,21 @@
 #include "chip8.h"
 
+void initialize_emu(struct Chip8 *state) {
+
+    state->pc = 0x0200;
+    state->i  = 0x0000;
+    
+    for (int i = 0; i < VX_REGISTERS; i++) {
+        state->registers[i] = 0x00;
+    }
+
+    for (int i = 0; i < SCREEN_WIDTH; i++) {
+        for (int j = 0; j < SCREEN_HEIGHT; j++) {
+            state->display[i][j] = false;
+        }
+    }
+}
+
 void decode() {
 
 }
@@ -33,16 +49,26 @@ void process(struct Chip8 *state, uint16_t opcode) {
         case 0x5000:
             break;
 
-        case 0x6000:
+        case 0x6000: {
+            int reg = (opcode & 0x0F00) >> 8;
+            state->registers[reg] = (opcode & 0x00FF);
             break;
+        }
 
-        case 0x7000:
+        case 0x7000: {
+            int reg = (opcode & 0x0F00) >> 8;
+            state->registers[reg] += (opcode & 0x00FF);
             break;
+        }
 
         case 0x8000:
             break;
 
         case 0x9000:
+            break;
+
+        case 0xA000:
+            state->i = (opcode & 0x0FFF);
             break;
     }
 }

@@ -16,6 +16,7 @@ struct Chip8 {
     bool display[SCREEN_WIDTH][SCREEN_HEIGHT];
 };
 
+void initialize_emu(struct Chip8 *state);
 void decode();
 void process(struct Chip8 *state, uint16_t opcode);
 

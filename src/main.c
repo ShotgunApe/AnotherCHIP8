@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     struct Chip8 *state;
     state = &emu;
 
-    state->pc = 0x200;
+    initialize_emu(state);
 
     int debug_msg_size;
     char debug_msgs[DEBUG_MSGS_HEIGHT][DEBUG_MSGS_LENGTH];

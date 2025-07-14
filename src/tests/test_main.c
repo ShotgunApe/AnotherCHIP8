@@ -38,6 +38,14 @@ int main() {
     process(state, 0x6A22);
     assert(state->registers[10] == 0x22);
 
+    // TEST 4 - 7XNN
+    process(state, 0x7A22);
+    assert(state->registers[10] == 0x44);
+
+    // TEST 5 - ANNN
+    process(state, 0xA200);
+    assert(state->i == 0x0200);
+
     printf("Tests Passed.\n");
     return 0;
 }
