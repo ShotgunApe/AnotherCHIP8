@@ -40,13 +40,20 @@ void process(struct Chip8 *state, uint16_t opcode) {
     state->pc += 2;
 
     switch (opcode & 0xF000) {
-        case 0x0000:
-            for (int x = 0; x < SCREEN_WIDTH; x++) {
-                for (int y = 0; y < SCREEN_HEIGHT; y++) {
-                    state->display[x][y] = false;
+        case 0x0000: {
+            if ((opcode & 0x00FF) == 0x00EE) {
+                state->pc = state->stack[0];
+                state->sp -= 1;
+            }
+            else {
+                for (int x = 0; x < SCREEN_WIDTH; x++) {
+                    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+                        state->display[x][y] = false;
+                    }
                 }
             }
             break;
+        }
 
         case 0x1000:
             state->pc = (opcode & 0x0FFF);
@@ -74,8 +81,14 @@ void process(struct Chip8 *state, uint16_t opcode) {
             break;
         }
         
-        case 0x5000:
+        case 0x5000: {
+            int reg_x = (opcode & 0x0F00) >> 8;
+            int reg_y = (opcode & 0x00F0) >> 4;
+            if (state->registers[reg_x] == state->registers[reg_y]) {
+                state->pc += 2;
+            }
             break;
+        }
 
         case 0x6000: {
             int reg = (opcode & 0x0F00) >> 8;
@@ -89,8 +102,41 @@ void process(struct Chip8 *state, uint16_t opcode) {
             break;
         }
 
-        case 0x8000:
+        case 0x8000: {
+            switch (opcode & 0x000F) {
+                case 0x0000: {
+                    int reg_x = (opcode & 0x0F00) >> 8;
+                    int reg_y = (opcode & 0x00F0) >> 4;
+                    state->registers[reg_x] = state->registers[reg_y];
+                    break;
+                }
+                case 0x0001: {
+                    break;
+                }
+                case 0x0002: {
+                    break;
+                }
+                case 0x0003: {
+                    break;
+                }
+                case 0x0004: {
+                    break;
+                }
+                case 0x0005: {
+                    break;
+                }
+                case 0x0006: {
+                    break;
+                }
+                case 0x0007: {
+                    break;
+                }
+                case 0x000E: {
+                    break;
+                }
+            }
             break;
+        }
 
         case 0x9000:
             break;

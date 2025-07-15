@@ -52,7 +52,7 @@ void construct_message(struct Chip8 *state, char *line, int i) {
 
     if (strcmp(left, "pc") == 0 || strcmp(left, "sp") == 0) {
         if (blank_right) {
-            snprintf(line, DEBUG_MSGS_LENGTH, "%s 0x0000", left);
+            snprintf(line, DEBUG_MSGS_LENGTH, "%s 0x%02x", left, state->sp);
         } else {
             snprintf(line, DEBUG_MSGS_LENGTH, "%s %#06x  %s %#06x", left, state->pc, right, state->i);
         }

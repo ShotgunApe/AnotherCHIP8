@@ -63,6 +63,23 @@ int main() {
     assert(state->pc == 0x0202);
 
     // TEST 9 - 5XY0
+    state->pc = 0x0200;
+    state->registers[1] = 0xAF;
+    state->registers[2] = 0xAF;
+    process(state, 0x5120);
+    assert(state->pc == 0x0204);
+
+    // TEST 10 - 00EE
+    state->pc = 0x0200;
+    process(state, 0x2300);
+    process(state, 0x00EE);
+    assert(state->pc == 0x0202);
+
+    // TEST 11 - 8XY0
+    state->pc = 0x0200;
+    state->registers[1] = 0x22;
+    process(state, 0x8210);
+    assert(state->registers[1] == state->registers[2]);
 
     printf("Tests Passed.\n");
     return 0;
