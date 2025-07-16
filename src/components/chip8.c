@@ -103,20 +103,24 @@ void process(struct Chip8 *state, uint16_t opcode) {
         }
 
         case 0x8000: {
+            int reg_x = (opcode & 0x0F00) >> 8;
+            int reg_y = (opcode & 0x00F0) >> 4;
+            
             switch (opcode & 0x000F) {
                 case 0x0000: {
-                    int reg_x = (opcode & 0x0F00) >> 8;
-                    int reg_y = (opcode & 0x00F0) >> 4;
                     state->registers[reg_x] = state->registers[reg_y];
                     break;
                 }
                 case 0x0001: {
+                    state->registers[reg_x] = (state->registers[reg_x] | state->registers[reg_y]);
                     break;
                 }
                 case 0x0002: {
+                    state->registers[reg_x] = (state->registers[reg_x] & state->registers[reg_y]);
                     break;
                 }
                 case 0x0003: {
+                    state->registers[reg_x] = (state->registers[reg_x] ^ state->registers[reg_y]);
                     break;
                 }
                 case 0x0004: {

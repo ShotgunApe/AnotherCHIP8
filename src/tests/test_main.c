@@ -81,6 +81,27 @@ int main() {
     process(state, 0x8210);
     assert(state->registers[1] == state->registers[2]);
 
+    // TEST 12 - 8XY1
+    state->pc = 0x0200;
+    state->registers[1] = 0x22;
+    state->registers[2] = 0x00;
+    process(state, 0x8211);
+    assert(state->registers[2] == (0x00 | 0x22));
+
+    // TEST 13 - 8XY2
+    state->pc = 0x0200;
+    state->registers[1] = 0x22;
+    state->registers[2] = 0x01;
+    process(state, 0x8212);
+    assert(state->registers[2] == (0x01 & 0x22));
+
+    // TEST 14 - 8XY3
+    state->pc = 0x0200;
+    state->registers[1] = 0x22;
+    state->registers[2] = 0x01;
+    process(state, 0x8213);
+    assert(state->registers[2] == (0x01 ^ 0x22));
+
     printf("Tests Passed.\n");
     return 0;
 }
