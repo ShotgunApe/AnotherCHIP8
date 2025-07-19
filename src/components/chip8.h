@@ -19,6 +19,8 @@ struct Chip8 {
     uint8_t  sp;
     uint8_t  registers[VX_REGISTERS];
     uint16_t stack[STACK_DEPTH];
+    uint8_t  dt;
+    uint8_t  st;
     unsigned char memory[WRITABLE_MEM];
     bool display[SCREEN_WIDTH][SCREEN_HEIGHT];
 };

@@ -1,11 +1,10 @@
 #include "chip8.h"
-#include <stdlib.h>
 
 void initialize_emu(struct Chip8 *state, char *argv[]) {
 
     state->pc = 0x0200;
     state->i  = 0x0000;
-    state->sp = 0x00;
+    state->sp = state->dt = state->st = 0x00;
     
     for (int i = 0; i < VX_REGISTERS; i++) {
         state->registers[i] = 0x00;
@@ -43,8 +42,8 @@ void process(struct Chip8 *state, uint16_t opcode) {
     switch (opcode & 0xF000) {
         case 0x0000: {
             if ((opcode & 0x00FF) == 0x00EE) {
-                state->pc = state->stack[0];
                 state->sp -= 1;
+                state->pc = state->stack[state->sp];
             }
             else {
                 for (int x = 0; x < SCREEN_WIDTH; x++) {
@@ -56,15 +55,17 @@ void process(struct Chip8 *state, uint16_t opcode) {
             break;
         }
 
-        case 0x1000:
+        case 0x1000: {
             state->pc = (opcode & 0x0FFF);
             break;
+        }
         
-        case 0x2000:
+        case 0x2000: {
             state->stack[state->sp] = state->pc;
-            (state->sp) += 1;
+            state->sp += 1;
             state->pc = (opcode & 0x0FFF);
             break;
+        }
         
         case 0x3000: {
             int reg = (opcode & 0x0F00) >> 8;
@@ -236,5 +237,47 @@ void process(struct Chip8 *state, uint16_t opcode) {
         case 0xE000: {
             break;
         }
+        case 0xF000: {
+            int reg_x = (opcode & 0x0F00) >> 8;
+            switch (opcode & 0x00FF) {
+                case 0x0007: {
+                    state->registers[reg_x] = state->dt;
+                    break;
+                }
+                case 0x000A: {
+                    break;
+                }
+                case 0x0015: {
+                    state->dt = state->registers[reg_x];
+                    break;
+                }
+                case 0x0018: {
+                    state->st = state->registers[reg_x];
+                    break;
+                }
+                case 0x001E: {
+                    state->i = state->i + state->registers[reg_x];
+                    break;
+                }
+                case 0x0029: {
+                    break;
+                }
+                case 0x0033: {
+                    break;
+                }
+                case 0x0055: {
+                    break;
+                }
+                case 0x0065: {
+                    break;
+                }
+            }
+        }
+    }
+    if (state->dt > 0) {
+        state->dt -= 1;
+    }
+    if (state->st > 0) {
+        state->st -= 1;
     }
 }
