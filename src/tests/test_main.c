@@ -122,6 +122,36 @@ int main() {
     assert(state->registers[2] == res);
     assert(state->registers[15] == 1);
 
+    // TEST 17 - 8XY6
+    state->pc = 0x0200;
+    state->registers[1] = 0x88;
+    state->registers[2] = 0x23;
+    state->registers[15] = 0x00;
+    process(state, 0x8216);
+    res = 0x23 / 0x02;
+    assert(state->registers[2] == res);
+    assert(state->registers[15] == 1);
+
+    // TEST 18 - 8XY7
+    state->pc = 0x0200;
+    state->registers[1] = 0xA2;
+    state->registers[2] = 0xD7;
+    state->registers[15] = 0x00;
+    process(state, 0x8217);
+    res = 0xA2 - 0xD7;
+    assert(state->registers[2] == res);
+    assert(state->registers[15] == 0);
+
+    // TEST 19 - 8XYE
+    state->pc = 0x0200;
+    state->registers[1] = 0x88;
+    state->registers[2] = 0x93;
+    state->registers[15] = 0x00;
+    process(state, 0x821E);
+    res = 0x93 * 0x02;
+    assert(state->registers[2] == res);
+    assert(state->registers[15] == 1);
+
     printf("Tests Passed.\n");
     return 0;
 }

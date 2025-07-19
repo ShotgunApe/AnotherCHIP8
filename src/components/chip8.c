@@ -126,7 +126,6 @@ void process(struct Chip8 *state, uint16_t opcode) {
                 case 0x0004: {
                     uint16_t tmp = (state->registers[reg_x] + state->registers[reg_y]);
                     state->registers[reg_x] = tmp;
-
                     // Set VF Flag if carry
                     if (state->registers[reg_x] != tmp) {
                         state->registers[15] = 1;
@@ -134,7 +133,6 @@ void process(struct Chip8 *state, uint16_t opcode) {
                     else {
                         state->registers[15] = 0;
                     }
-
                     break;
                 }
                 case 0x0005: {
@@ -148,12 +146,33 @@ void process(struct Chip8 *state, uint16_t opcode) {
                     break;
                 }
                 case 0x0006: {
+                    if ((state->registers[reg_x] % 2) == 1) {
+                        state->registers[15] = 1;
+                    }
+                    else {
+                        state->registers[15] = 0;
+                    }
+                    state->registers[reg_x] = (state->registers[reg_x] / 2);
                     break;
                 }
                 case 0x0007: {
+                    if (state->registers[reg_y] > state->registers[reg_x]) {
+                        state->registers[15] = 1;
+                    }
+                    else {
+                        state->registers[15] = 0;
+                    }
+                    state->registers[reg_x] = state->registers[reg_y] - state->registers[reg_x];
                     break;
                 }
                 case 0x000E: {
+                    if (((state->registers[reg_x] >> 4) % 2) == 1) {
+                        state->registers[15] = 1;
+                    }
+                    else {
+                        state->registers[15] = 0;
+                    }
+                    state->registers[reg_x] = (state->registers[reg_x] * 2);
                     break;
                 }
             }
