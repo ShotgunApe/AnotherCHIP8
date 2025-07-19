@@ -102,6 +102,16 @@ int main() {
     process(state, 0x8213);
     assert(state->registers[2] == (0x01 ^ 0x22));
 
+    // TEST 15 - 8XY4 - (VF Flag set)
+    state->pc = 0x0200;
+    state->registers[1] = 0xA2;
+    state->registers[2] = 0xD7;
+    state->registers[15] = 0x00;
+    process(state, 0x8214);
+    uint8_t res = 0xA2 + 0xD7;
+    assert(state->registers[2] == res);
+    assert(state->registers[15] == 1);
+
     printf("Tests Passed.\n");
     return 0;
 }
