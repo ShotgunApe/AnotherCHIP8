@@ -112,6 +112,16 @@ int main() {
     assert(state->registers[2] == res);
     assert(state->registers[15] == 1);
 
+    // TEST 16 - 8XY5
+    state->pc = 0x0200;
+    state->registers[1] = 0xA2;
+    state->registers[2] = 0xD7;
+    state->registers[15] = 0x00;
+    process(state, 0x8215);
+    res = 0xD7 - 0xA2;
+    assert(state->registers[2] == res);
+    assert(state->registers[15] == 1);
+
     printf("Tests Passed.\n");
     return 0;
 }

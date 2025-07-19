@@ -128,16 +128,23 @@ void process(struct Chip8 *state, uint16_t opcode) {
                     state->registers[reg_x] = tmp;
 
                     // Set VF Flag if carry
-                    if (state->registers[reg_x != tmp]) {
+                    if (state->registers[reg_x] != tmp) {
                         state->registers[15] = 1;
                     }
                     else {
                         state->registers[15] = 0;
                     }
-                    
+
                     break;
                 }
                 case 0x0005: {
+                    if (state->registers[reg_x] > state->registers[reg_y]) {
+                        state->registers[15] = 1;
+                    }
+                    else {
+                        state->registers[15] = 0;
+                    }
+                    state->registers[reg_x] = state->registers[reg_x] - state->registers[reg_y];
                     break;
                 }
                 case 0x0006: {
