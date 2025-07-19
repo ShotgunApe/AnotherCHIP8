@@ -52,19 +52,33 @@ int main(int argc, char **argv) {
         delta_time = delta_a - delta_b;
 
         if (delta_time > 1000 / FRAMERATE) {
-            opcode = decode(state);
-            process(state, opcode);
 
             while (SDL_PollEvent(&event) != 0 ) {
 		        switch (event.type) {
-                    case SDL_EVENT_KEY_DOWN:
-                        render_debug_msgs = !render_debug_msgs;
+
+                    case SDL_EVENT_KEY_DOWN: {
+                        switch (event.key.scancode) {
+                            case (SDL_SCANCODE_F1): {
+                                render_debug_msgs = !render_debug_msgs;
+                                break;
+                            }
+                            default: {
+                                state->ib = event.key.scancode;
+                                break;
+                            }
+                        }
+                    }
+                        // Should never reach here
                         break;
+
 		    	    case SDL_EVENT_QUIT:
 		    	    	running = false;
 		    	    	break;
 		        }
 	        }
+
+            opcode = decode(state);
+            process(state, opcode);
 
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
             SDL_RenderClear(gRenderer);
@@ -90,6 +104,7 @@ int main(int argc, char **argv) {
 
             SDL_RenderPresent(gRenderer);
             delta_b = delta_a;
+            state->ib = 0;
         }
     }
 

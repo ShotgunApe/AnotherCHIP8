@@ -1,4 +1,5 @@
 #include "chip8.h"
+#include "font.h"
 
 void initialize_emu(struct Chip8 *state, char *argv[]) {
 
@@ -25,6 +26,10 @@ void initialize_emu(struct Chip8 *state, char *argv[]) {
     if (file == NULL) {
         perror("Error opening file");
         exit(1);
+    }
+
+    for (int i = 0; i < 80; i++) {
+        state->memory[i] = font[i];
     }
 
     fread(&state->memory[0x200], 1, sizeof(state->memory) - 0x200, file);
@@ -235,6 +240,19 @@ void process(struct Chip8 *state, uint16_t opcode) {
         }
 
         case 0xE000: {
+            // TODO: Figure out input
+            int reg_x = (opcode & 0x0F00) >> 8;
+
+            if ((opcode & 0x00FF) == 0x009E) {
+                if (state->ib == state->registers[reg_x]) {
+                    state->pc += 2;
+                }
+            }
+            else {
+                if (state->ib != state->registers[reg_x]) {
+                    state->pc += 2;
+                }
+            }
             break;
         }
         case 0xF000: {
@@ -245,6 +263,10 @@ void process(struct Chip8 *state, uint16_t opcode) {
                     break;
                 }
                 case 0x000A: {
+                    // Waits for input, stay on opcode if no input
+                    if (state->ib == 0)  {
+                        state->pc -= 2;
+                    }
                     break;
                 }
                 case 0x0015: {
@@ -260,15 +282,22 @@ void process(struct Chip8 *state, uint16_t opcode) {
                     break;
                 }
                 case 0x0029: {
+                    state->i = state->memory[state->registers[reg_x] * 5];
                     break;
                 }
                 case 0x0033: {
                     break;
                 }
                 case 0x0055: {
+                    for (int i = 0; i < reg_x; i++) {
+                        state->memory[state->i + (i * 4)] = state->registers[i];
+                    }
                     break;
                 }
                 case 0x0065: {
+                    for (int i = 0; i < reg_x; i++) {
+                        state->registers[i] = state->memory[state->i + (i * 4)];
+                    }
                     break;
                 }
             }

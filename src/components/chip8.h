@@ -21,6 +21,7 @@ struct Chip8 {
     uint16_t stack[STACK_DEPTH];
     uint8_t  dt;
     uint8_t  st;
+    uint16_t  ib;
     unsigned char memory[WRITABLE_MEM];
     bool display[SCREEN_WIDTH][SCREEN_HEIGHT];
 };
