@@ -152,6 +152,19 @@ int main() {
     assert(state->registers[2] == res);
     assert(state->registers[15] == 1);
 
+    // TEST 20 - 9XY0
+    state->pc = 0x0200;
+    state->registers[1] = 0x88;
+    state->registers[2] = 0x93;
+    process(state, 0x9120);
+    assert(state->pc == 0x0204);
+
+    // TEST 21 - BNNN
+    state->pc = 0x0200;
+    state->registers[0] = 0x88;
+    process(state, 0xB2F3);
+    assert(state->pc == (0x88 + 0x02F3));
+
     printf("Tests Passed.\n");
     return 0;
 }

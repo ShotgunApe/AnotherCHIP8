@@ -1,4 +1,5 @@
 #include "chip8.h"
+#include <stdlib.h>
 
 void initialize_emu(struct Chip8 *state, char *argv[]) {
 
@@ -179,13 +180,32 @@ void process(struct Chip8 *state, uint16_t opcode) {
             break;
         }
 
-        case 0x9000:
-            break;
+        case 0x9000: {
+            int reg_x = (opcode & 0x0F00) >> 8;
+            int reg_y = (opcode & 0x00F0) >> 4;
 
-        case 0xA000:
+            if (state->registers[reg_x] != state->registers[reg_y]) {
+                state->pc += 2;
+            }
+            break;
+        }
+
+        case 0xA000: {
             state->i = (opcode & 0x0FFF);
             break;
+        }
         
+        case 0xB000: {
+            state->pc = (opcode & 0x0FFF) + state->registers[0];
+            break;
+        }
+
+        case 0xC000: {
+            int reg_x = (opcode & 0x0F00) >> 8;
+            state->registers[reg_x] = rand() & (opcode & 0x00FF);
+            break;
+        }
+
         case 0xD000: {
             int x = (state->registers[(opcode & 0x0F00) >> 8]) % 64;
             int y = (state->registers[(opcode & 0x00F0) >> 4]) % 32;
@@ -210,6 +230,10 @@ void process(struct Chip8 *state, uint16_t opcode) {
                     }
                 }
             }
+            break;
+        }
+
+        case 0xE000: {
             break;
         }
     }
